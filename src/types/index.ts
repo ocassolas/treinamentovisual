@@ -7,8 +7,10 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  password: string;
   role: 'admin' | 'user';
   sectorId: string | null;
+  viewedTutorials?: string[];
 }
 
 export interface Tutorial {

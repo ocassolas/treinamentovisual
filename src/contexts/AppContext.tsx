@@ -25,9 +25,9 @@ const INITIAL_SECTORS: Sector[] = [
 ];
 
 const INITIAL_USERS: User[] = [
-  { id: 'admin', name: 'Administrador', email: 'admin@empresa.com', role: 'admin', sectorId: null },
-  { id: 'user1', name: 'João Silva', email: 'joao@empresa.com', role: 'user', sectorId: '1' },
-  { id: 'user2', name: 'Maria Santos', email: 'maria@empresa.com', role: 'user', sectorId: '2' },
+  { id: 'admin', name: 'Administrador', email: 'admin@empresa.com', password: '123456', role: 'admin', sectorId: null, viewedTutorials: [] },
+  { id: 'user1', name: 'João Silva', email: 'joao@empresa.com', password: '123456', role: 'user', sectorId: '1', viewedTutorials: [] },
+  { id: 'user2', name: 'Maria Santos', email: 'maria@empresa.com', password: '123456', role: 'user', sectorId: '2', viewedTutorials: [] },
 ];
 
 const INITIAL_TUTORIALS: Tutorial[] = [
@@ -95,7 +95,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const login = (email: string, password: string): boolean => {
     // Simple mock login - in production, this would validate against a backend
     const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-    if (user && password === '123456') {
+    if (user && user.password === password) {
       setCurrentUser(user);
       return true;
     }
@@ -122,6 +122,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const newUser: User = {
       ...userData,
       id: Date.now().toString(),
+      viewedTutorials: [],
     };
     setUsers([...users, newUser]);
   };
@@ -152,8 +153,27 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   const markTutorialAsViewed = (tutorialId: string) => {
-    // In production, this would track user progress
-    console.log('Tutorial viewed:', tutorialId);
+    if (!currentUser) return;
+    
+    setUsers(users.map(u => {
+      if (u.id === currentUser.id) {
+        const viewedTutorials = u.viewedTutorials || [];
+        if (!viewedTutorials.includes(tutorialId)) {
+          return { ...u, viewedTutorials: [...viewedTutorials, tutorialId] };
+        }
+      }
+      return u;
+    }));
+
+    // Update currentUser as well
+    setCurrentUser(prev => {
+      if (!prev) return prev;
+      const viewedTutorials = prev.viewedTutorials || [];
+      if (!viewedTutorials.includes(tutorialId)) {
+        return { ...prev, viewedTutorials: [...viewedTutorials, tutorialId] };
+      }
+      return prev;
+    });
   };
 
   const getSectorName = (sectorId: string): string => {

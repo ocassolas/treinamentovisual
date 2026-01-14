@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
-import { ArrowLeft, Upload, X, Image } from 'lucide-react';
+import { ArrowLeft, X, Camera, ImageIcon, Plus } from 'lucide-react';
 
 export default function NovoTutorial() {
   const { sectors, addTutorial } = useApp();
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const [showImageOptions, setShowImageOptions] = useState(false);
   
   const [formData, setFormData] = useState({
     title: '',
@@ -15,16 +18,23 @@ export default function NovoTutorial() {
     sectorId: '',
     images: [] as string[],
   });
-  const [imageUrl, setImageUrl] = useState('');
 
-  const handleAddImage = () => {
-    if (imageUrl.trim()) {
-      setFormData({
-        ...formData,
-        images: [...formData.images, imageUrl.trim()],
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      Array.from(files).forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const result = event.target?.result as string;
+          setFormData((prev) => ({
+            ...prev,
+            images: [...prev.images, result],
+          }));
+        };
+        reader.readAsDataURL(file);
       });
-      setImageUrl('');
     }
+    setShowImageOptions(false);
   };
 
   const handleRemoveImage = (index: number) => {
@@ -32,6 +42,14 @@ export default function NovoTutorial() {
       ...formData,
       images: formData.images.filter((_, i) => i !== index),
     });
+  };
+
+  const handleTakePhoto = () => {
+    cameraInputRef.current?.click();
+  };
+
+  const handleUploadFile = () => {
+    fileInputRef.current?.click();
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -104,15 +122,15 @@ export default function NovoTutorial() {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium mb-2">Descrição (máx. 140 caracteres)</label>
+            <label className="block text-sm font-medium mb-2">Descrição (máx. 1000 caracteres)</label>
             <textarea
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value.slice(0, 140) })}
-              className="w-full h-24 px-4 py-3 border border-input bg-background resize-none"
+              onChange={(e) => setFormData({ ...formData, description: e.target.value.slice(0, 1000) })}
+              className="w-full h-32 px-4 py-3 border border-input bg-background resize-none"
               placeholder="Exemplo: Sempre utilize luvas antes de iniciar a operação"
             />
             <p className="text-xs text-muted-foreground mt-1">
-              {formData.description.length}/140 caracteres
+              {formData.description.length}/1000 caracteres
             </p>
           </div>
 
@@ -144,27 +162,58 @@ export default function NovoTutorial() {
               </div>
             )}
 
-            {/* Add Image URL */}
-            <div className="flex gap-2">
-              <div className="flex-1 relative">
-                <Image size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="url"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  className="w-full h-12 pl-12 pr-4 border border-input bg-background"
-                  placeholder="URL da imagem"
-                />
-              </div>
+            {/* Hidden file inputs */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleFileSelect}
+              className="hidden"
+            />
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
+
+            {/* Add Image Button */}
+            <div className="relative">
               <button
                 type="button"
-                onClick={handleAddImage}
-                className="h-12 px-4 bg-secondary text-secondary-foreground flex items-center gap-2 hover:bg-border transition-colors"
+                onClick={() => setShowImageOptions(!showImageOptions)}
+                className="w-full h-14 border-2 border-dashed border-input bg-background flex items-center justify-center gap-2 text-muted-foreground hover:border-primary hover:text-primary transition-colors"
               >
-                <Upload size={18} />
-                Adicionar
+                <Plus size={20} />
+                Adicionar Imagem
               </button>
+
+              {/* Image Options Modal */}
+              {showImageOptions && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-background border border-input z-10">
+                  <button
+                    type="button"
+                    onClick={handleTakePhoto}
+                    className="w-full h-14 flex items-center gap-3 px-4 hover:bg-secondary transition-colors border-b border-input"
+                  >
+                    <Camera size={22} className="text-primary" />
+                    <span className="font-medium">Tirar Foto</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleUploadFile}
+                    className="w-full h-14 flex items-center gap-3 px-4 hover:bg-secondary transition-colors"
+                  >
+                    <ImageIcon size={22} className="text-primary" />
+                    <span className="font-medium">Enviar da Galeria</span>
+                  </button>
+                </div>
+              )}
             </div>
+
             <p className="text-xs text-muted-foreground mt-2">
               Adicione fotos reais do processo. As imagens aparecerão em sequência.
             </p>

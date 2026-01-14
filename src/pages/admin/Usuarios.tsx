@@ -11,6 +11,7 @@ export default function Usuarios() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    password: '',
     sectorId: '',
   });
 
@@ -18,14 +19,15 @@ export default function Usuarios() {
 
   const handleAddUser = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.name.trim() && formData.email.trim() && formData.sectorId) {
+    if (formData.name.trim() && formData.email.trim() && formData.password.trim() && formData.sectorId) {
       addUser({
         name: formData.name.trim(),
         email: formData.email.trim(),
+        password: formData.password.trim(),
         role: 'user',
         sectorId: formData.sectorId,
       });
-      setFormData({ name: '', email: '', sectorId: '' });
+      setFormData({ name: '', email: '', password: '', sectorId: '' });
       setShowForm(false);
     }
   };
@@ -73,6 +75,16 @@ export default function Usuarios() {
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full h-12 px-4 border border-input bg-background"
                 placeholder="email@empresa.com"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Senha</label>
+              <input
+                type="password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                className="w-full h-12 px-4 border border-input bg-background"
+                placeholder="Senha do usuário"
               />
             </div>
             <div>
