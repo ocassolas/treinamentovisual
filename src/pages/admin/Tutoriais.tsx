@@ -5,6 +5,7 @@ import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
 import { TutorialCard } from '@/components/TutorialCard';
 import { TutorialViewer } from '@/components/TutorialViewer';
+import { EditTutorialModal } from '@/components/EditTutorialModal';
 import { Tutorial } from '@/types';
 import { Plus, Search, X } from 'lucide-react';
 
@@ -16,6 +17,7 @@ export default function Tutoriais() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSector, setSelectedSector] = useState(searchParams.get('setor') || '');
   const [viewingTutorial, setViewingTutorial] = useState<Tutorial | null>(null);
+  const [editingTutorial, setEditingTutorial] = useState<Tutorial | null>(null);
 
   const filteredTutorials = useMemo(() => {
     return tutorials.filter((tutorial) => {
@@ -98,7 +100,9 @@ export default function Tutoriais() {
                 key={tutorial.id}
                 tutorial={tutorial}
                 showDelete
+                showEdit
                 onView={() => setViewingTutorial(tutorial)}
+                onEdit={() => setEditingTutorial(tutorial)}
                 onDelete={() => handleDeleteTutorial(tutorial.id)}
               />
             ))
@@ -113,6 +117,14 @@ export default function Tutoriais() {
         <TutorialViewer
           tutorial={viewingTutorial}
           onClose={() => setViewingTutorial(null)}
+        />
+      )}
+
+      {/* Edit Tutorial Modal */}
+      {editingTutorial && (
+        <EditTutorialModal
+          tutorial={editingTutorial}
+          onClose={() => setEditingTutorial(null)}
         />
       )}
     </div>

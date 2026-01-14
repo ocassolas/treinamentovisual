@@ -7,6 +7,7 @@ interface AppContextType extends AppState {
   addSector: (name: string) => void;
   deleteSector: (id: string) => void;
   addUser: (user: Omit<User, 'id'>) => void;
+  updateUser: (id: string, userData: Partial<User>) => void;
   deleteUser: (id: string) => void;
   addTutorial: (tutorial: Omit<Tutorial, 'id' | 'createdAt' | 'createdBy'>) => void;
   updateTutorial: (id: string, tutorial: Partial<Tutorial>) => void;
@@ -136,6 +137,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setUsers([...users, newUser]);
   };
 
+  const updateUser = (id: string, userData: Partial<User>) => {
+    setUsers(users.map(u => 
+      u.id === id ? { ...u, ...userData } : u
+    ));
+  };
+
   const deleteUser = (id: string) => {
     setUsers(users.filter(u => u.id !== id));
   };
@@ -200,6 +207,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       addSector,
       deleteSector,
       addUser,
+      updateUser,
       deleteUser,
       addTutorial,
       updateTutorial,
