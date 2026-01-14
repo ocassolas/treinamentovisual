@@ -39,7 +39,18 @@ Para usar o backend com Firebase, siga estes passos:
      ```
    - Para produção, restrinja acesso (ex.: apenas usuários autenticados).
 
-6. **Deploy**:
+6. **Configure no Vercel** (se estiver fazendo deploy lá):
+   - No painel do Vercel, vá para seu projeto > "Settings" > "Environment Variables".
+   - Adicione as seguintes variáveis (use os valores do Firebase):
+     - `VITE_FIREBASE_API_KEY`: Seu apiKey
+     - `VITE_FIREBASE_AUTH_DOMAIN`: Seu authDomain
+     - `VITE_FIREBASE_PROJECT_ID`: Seu projectId
+     - `VITE_FIREBASE_STORAGE_BUCKET`: Seu storageBucket
+     - `VITE_FIREBASE_MESSAGING_SENDER_ID`: Seu messagingSenderId
+     - `VITE_FIREBASE_APP_ID`: Seu appId
+   - Re-deploy o projeto no Vercel.
+
+7. **Deploy**:
    - Após configurar, faça commit e push para GitHub.
    - O Vercel fará o deploy automaticamente.
 
