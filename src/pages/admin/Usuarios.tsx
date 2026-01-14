@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
+import { EditUserModal } from '@/components/EditUserModal';
 import { User } from '@/types';
-import { Plus, Trash2, FolderOpen } from 'lucide-react';
+import { Plus, Trash2, FolderOpen, Pencil } from 'lucide-react';
 
 export default function Usuarios() {
   const { users, sectors, addUser, deleteUser, getSectorName } = useApp();
   const [showForm, setShowForm] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -130,13 +132,22 @@ export default function Usuarios() {
                     </div>
                   )}
                 </div>
-                <button
-                  onClick={() => handleDeleteUser(user.id)}
-                  className="h-10 w-10 flex items-center justify-center bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
-                  aria-label="Apagar usuário"
-                >
-                  <Trash2 size={18} />
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setEditingUser(user)}
+                    className="h-10 w-10 flex items-center justify-center bg-secondary text-foreground hover:bg-border transition-colors"
+                    aria-label="Editar usuário"
+                  >
+                    <Pencil size={18} />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteUser(user.id)}
+                    className="h-10 w-10 flex items-center justify-center bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
+                    aria-label="Apagar usuário"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </div>
             ))
           )}
@@ -144,6 +155,14 @@ export default function Usuarios() {
       </main>
 
       <BottomNav />
+
+      {/* Edit User Modal */}
+      {editingUser && (
+        <EditUserModal
+          user={editingUser}
+          onClose={() => setEditingUser(null)}
+        />
+      )}
     </div>
   );
 }

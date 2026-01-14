@@ -1,15 +1,17 @@
 import { Tutorial } from '@/types';
 import { useApp } from '@/contexts/AppContext';
-import { Trash2, Eye } from 'lucide-react';
+import { Trash2, Eye, Pencil } from 'lucide-react';
 
 interface TutorialCardProps {
   tutorial: Tutorial;
   onView: () => void;
   onDelete?: () => void;
+  onEdit?: () => void;
   showDelete?: boolean;
+  showEdit?: boolean;
 }
 
-export function TutorialCard({ tutorial, onView, onDelete, showDelete = false }: TutorialCardProps) {
+export function TutorialCard({ tutorial, onView, onDelete, onEdit, showDelete = false, showEdit = false }: TutorialCardProps) {
   const { getSectorName } = useApp();
 
   return (
@@ -44,6 +46,18 @@ export function TutorialCard({ tutorial, onView, onDelete, showDelete = false }:
           <Eye size={18} />
           Ver
         </button>
+        {showEdit && onEdit && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit();
+            }}
+            className="flex items-center justify-center gap-2 h-12 px-4 bg-secondary text-foreground hover:bg-border transition-colors"
+            aria-label="Editar tutorial"
+          >
+            <Pencil size={18} />
+          </button>
+        )}
         {showDelete && onDelete && (
           <button
             onClick={(e) => {
