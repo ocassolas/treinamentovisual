@@ -1,22 +1,27 @@
-# Welcome to your Lovable project
+# Treinamento Visual
 
-## Project info
+Sistema de treinamento visual para empresas, com sincronização multiplataforma via Firebase.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Funcionalidades
+- Gerenciamento de setores e tutoriais por admins.
+- Visualização de tutoriais por usuários.
+- Sincronização em tempo real entre dispositivos.
+- Interface responsiva para desktop e mobile.
 
-## How can I edit this code?
+## Configuração do Backend
+Para habilitar a sincronização, configure o Firebase seguindo as instruções em [FIREBASE_SETUP.md](./FIREBASE_SETUP.md).
 
-There are several ways of editing your application.
+## Desenvolvimento Local
+1. Clone o repositório.
+2. Instale dependências: `npm install`.
+3. Configure Firebase (veja FIREBASE_SETUP.md).
+4. Execute: `npm run dev`.
+5. Acesse `http://localhost:8080`.
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Deploy
+- O projeto é compatível com Vercel.
+- Configure o Firebase antes do deploy.
+- Veja o passo a passo em FIREBASE_SETUP.md.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 

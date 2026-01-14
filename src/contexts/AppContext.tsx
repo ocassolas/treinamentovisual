@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, Sector, Tutorial, AppState } from '@/types';
-import { db, initializeDatabase } from '@/lib/database';
+import { db } from '@/lib/firebase';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
 
 interface AppContextType extends AppState {
   login: (email: string, password: string) => boolean;
@@ -29,18 +30,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [tutorials, setTutorials] = useState<Tutorial[]>([]);
   const [users, setUsers] = useState<User[]>([]);
 
-  // Inicializar banco de dados e carregar dados
+  // Load sectors and tutorials from Firestore
   useEffect(() => {
-    const loadData = async () => {
-      await initializeDatabase();
-      const loadedSectors = await db.sectors.toArray();
-      const loadedTutorials = await db.tutorials.toArray();
-      const loadedUsers = await db.users.toArray();
-      setSectors(loadedSectors);
-      setTutorials(loadedTutorials);
-      setUsers(loadedUsers);
+    const sectorsUnsubscribe = onSnapshot(collection(db, 'sectors'), (snapshot) => {
+      const sectorsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Sector));
+      setSectors(sectorsData);
+    });
+
+    const tutorialsUnsubscribe = onSnapshot(collection(db, 'tutorials'), (snapshot) => {
+      const tutorialsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Tutorial));
+      setTutorials(tutorialsData);
+    });
+
+    return () => {
+      sectorsUnsubscribe();
+      tutorialsUnsubscribe();
     };
-    loadData();
   }, []);
 
   const login = (email: string, password: string): boolean => {
@@ -58,17 +63,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   const addSector = async (name: string) => {
-    const newSector: Sector = {
-      id: Date.now().toString(),
-      name,
-    };
-    setSectors(prev => [...prev, newSector]);
-    await db.sectors.add(newSector);
+    const newSector = { name };
+    const docRef = await addDoc(collection(db, 'sectors'), newSector);
+    // Firestore will update via onSnapshot
   };
 
   const deleteSector = async (id: string) => {
-    setSectors(prev => prev.filter(s => s.id !== id));
-    await db.sectors.delete(id);
+    await deleteDoc(doc(db, 'sectors', id));
+    // Firestore will update via onSnapshot
   };
 
   const addUser = async (userData: Omit<User, 'id'>) => {
@@ -78,43 +80,40 @@ export function AppProvider({ children }: { children: ReactNode }) {
       viewedTutorials: [],
     };
     setUsers(prev => [...prev, newUser]);
-    await db.users.add(newUser);
+    // Users remain local
   };
 
   const updateUser = async (id: string, userData: Partial<User>) => {
     setUsers(prev => prev.map(u => 
       u.id === id ? { ...u, ...userData } : u
     ));
-    await db.users.update(id, userData);
+    // Users remain local
   };
 
   const deleteUser = async (id: string) => {
     setUsers(prev => prev.filter(u => u.id !== id));
-    await db.users.delete(id);
+    // Users remain local
   };
 
   const addTutorial = async (tutorialData: Omit<Tutorial, 'id' | 'createdAt' | 'createdBy'>) => {
     if (!currentUser) return;
-    const newTutorial: Tutorial = {
+    const newTutorial = {
       ...tutorialData,
-      id: Date.now().toString(),
       createdBy: currentUser.id,
       createdAt: new Date().toISOString(),
     };
-    setTutorials(prev => [...prev, newTutorial]);
-    await db.tutorials.add(newTutorial);
+    await addDoc(collection(db, 'tutorials'), newTutorial);
+    // Firestore will update via onSnapshot
   };
 
   const updateTutorial = async (id: string, tutorialData: Partial<Tutorial>) => {
-    setTutorials(prev => prev.map(t => 
-      t.id === id ? { ...t, ...tutorialData } : t
-    ));
-    await db.tutorials.update(id, tutorialData);
+    await updateDoc(doc(db, 'tutorials', id), tutorialData);
+    // Firestore will update via onSnapshot
   };
 
   const deleteTutorial = async (id: string) => {
-    setTutorials(prev => prev.filter(t => t.id !== id));
-    await db.tutorials.delete(id);
+    await deleteDoc(doc(db, 'tutorials', id));
+    // Firestore will update via onSnapshot
   };
 
   const markTutorialAsViewed = async (tutorialId: string) => {
