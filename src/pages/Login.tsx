@@ -82,16 +82,6 @@ export default function Login() {
               Entrar
             </button>
           </form>
-
-          {/* Demo credentials */}
-          <div className="mt-8 p-4 bg-muted">
-            <p className="text-sm font-medium mb-2">Acesso de demonstração:</p>
-            <div className="text-sm text-muted-foreground space-y-1">
-              <p><strong>Admin:</strong> admin@empresa.com</p>
-              <p><strong>Usuário:</strong> joao@empresa.com</p>
-              <p><strong>Senha:</strong> 123456</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
