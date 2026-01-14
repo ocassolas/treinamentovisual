@@ -19,10 +19,10 @@ export default function Usuarios() {
 
   const regularUsers = users.filter(u => u.role === 'user');
 
-  const handleAddUser = (e: React.FormEvent) => {
+  const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.name.trim() && formData.email.trim() && formData.password.trim() && formData.sectorId) {
-      addUser({
+      await addUser({
         name: formData.name.trim(),
         email: formData.email.trim(),
         password: formData.password.trim(),
@@ -34,9 +34,9 @@ export default function Usuarios() {
     }
   };
 
-  const handleDeleteUser = (id: string) => {
+  const handleDeleteUser = async (id: string) => {
     if (confirm('Tem certeza que deseja apagar este usuário?')) {
-      deleteUser(id);
+      await deleteUser(id);
     }
   };
 

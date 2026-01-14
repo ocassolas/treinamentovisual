@@ -29,9 +29,9 @@ export default function Tutoriais() {
     });
   }, [tutorials, selectedSector, searchQuery]);
 
-  const handleDeleteTutorial = (id: string) => {
+  const handleDeleteTutorial = async (id: string) => {
     if (confirm('Tem certeza que deseja apagar este tutorial?')) {
-      deleteTutorial(id);
+      await deleteTutorial(id);
     }
   };
 

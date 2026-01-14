@@ -17,10 +17,10 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
     sectorId: user.sectorId || '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.name.trim() && formData.email.trim() && formData.password.trim()) {
-      updateUser(user.id, {
+      await updateUser(user.id, {
         name: formData.name.trim(),
         email: formData.email.trim(),
         password: formData.password.trim(),

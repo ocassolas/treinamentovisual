@@ -10,18 +10,18 @@ export default function Setores() {
   const [showForm, setShowForm] = useState(false);
   const [newSectorName, setNewSectorName] = useState('');
 
-  const handleAddSector = (e: React.FormEvent) => {
+  const handleAddSector = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newSectorName.trim()) {
-      addSector(newSectorName.trim());
+      await addSector(newSectorName.trim());
       setNewSectorName('');
       setShowForm(false);
     }
   };
 
-  const handleDeleteSector = (id: string) => {
+  const handleDeleteSector = async (id: string) => {
     if (confirm('Tem certeza que deseja apagar este setor?')) {
-      deleteSector(id);
+      await deleteSector(id);
     }
   };
 

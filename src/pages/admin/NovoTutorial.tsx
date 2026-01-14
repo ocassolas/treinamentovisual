@@ -52,7 +52,7 @@ export default function NovoTutorial() {
     fileInputRef.current?.click();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.title.trim() || !formData.sectorId || formData.images.length === 0) {
@@ -60,7 +60,7 @@ export default function NovoTutorial() {
       return;
     }
 
-    addTutorial({
+    await addTutorial({
       title: formData.title.trim(),
       description: formData.description.trim(),
       sectorId: formData.sectorId,

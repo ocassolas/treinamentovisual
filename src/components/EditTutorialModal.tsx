@@ -54,10 +54,10 @@ export function EditTutorialModal({ tutorial, onClose }: EditTutorialModalProps)
     fileInputRef.current?.click();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.title.trim() && formData.sectorId && formData.images.length > 0) {
-      updateTutorial(tutorial.id, {
+      await updateTutorial(tutorial.id, {
         title: formData.title.trim(),
         description: formData.description.trim(),
         sectorId: formData.sectorId,

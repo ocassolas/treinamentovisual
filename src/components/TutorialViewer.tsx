@@ -12,8 +12,8 @@ export function TutorialViewer({ tutorial, onClose }: TutorialViewerProps) {
   const { getSectorName, markTutorialAsViewed } = useApp();
   const [currentImage, setCurrentImage] = useState(0);
 
-  const handleConfirm = () => {
-    markTutorialAsViewed(tutorial.id);
+  const handleConfirm = async () => {
+    await markTutorialAsViewed(tutorial.id);
     onClose();
   };
 
