@@ -12,6 +12,7 @@ import Usuarios from "./pages/admin/Usuarios";
 import Tutoriais from "./pages/admin/Tutoriais";
 import NovoTutorial from "./pages/admin/NovoTutorial";
 import UserDashboard from "./pages/user/UserDashboard";
+import Concluidos from "./pages/user/Concluidos";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -67,6 +68,11 @@ function AppRoutes() {
       <Route path="/app" element={
         <ProtectedRoute requiredRole="user">
           <UserDashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/app/concluidos" element={
+        <ProtectedRoute requiredRole="user">
+          <Concluidos />
         </ProtectedRoute>
       } />
       

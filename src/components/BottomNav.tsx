@@ -1,5 +1,5 @@
 import { useApp } from '@/contexts/AppContext';
-import { Home, FolderOpen, Users, BookOpen } from 'lucide-react';
+import { Home, FolderOpen, Users, BookOpen, CheckCircle } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 interface NavItem {
@@ -18,6 +18,7 @@ const NAV_ITEMS: NavItem[] = [
 
 const USER_NAV_ITEMS: NavItem[] = [
   { path: '/app', label: 'Tutoriais', icon: <BookOpen size={22} /> },
+  { path: '/app/concluidos', label: 'Concluídos', icon: <CheckCircle size={22} /> },
 ];
 
 export function BottomNav() {
