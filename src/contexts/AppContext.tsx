@@ -69,7 +69,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const [users, setUsers] = useState<User[]>(() => {
     const saved = localStorage.getItem('users');
-    return saved ? JSON.parse(saved) : INITIAL_USERS;
+    if (saved) {
+      const parsedUsers = JSON.parse(saved);
+      // Migrate old users without password field
+      return parsedUsers.map((u: User) => ({
+        ...u,
+        password: u.password || '123456',
+        viewedTutorials: u.viewedTutorials || [],
+      }));
+    }
+    return INITIAL_USERS;
   });
 
   useEffect(() => {
