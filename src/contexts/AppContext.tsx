@@ -28,7 +28,26 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const [sectors, setSectors] = useState<Sector[]>([]);
   const [tutorials, setTutorials] = useState<Tutorial[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[]>(() => [
+    {
+      id: 'admin-1',
+      name: 'Administrador',
+      email: 'admin@torrense.com',
+      password: '123456',
+      role: 'admin',
+      sectorId: null,
+      viewedTutorials: [],
+    },
+    {
+      id: 'user-1',
+      name: 'João Silva',
+      email: 'joao@torrense.com',
+      password: '123456',
+      role: 'user',
+      sectorId: '1',
+      viewedTutorials: [],
+    },
+  ]);
 
   // Load sectors and tutorials from Firestore
   useEffect(() => {
