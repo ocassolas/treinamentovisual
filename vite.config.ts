@@ -11,11 +11,23 @@ export default defineConfig(({ mode }) => ({
     hmr: {
       overlay: false,
     },
+    middlewareMode: false,
+    // Serve index.html for all requests (SPA fallback)
+    middleware: (req, res, next) => {
+      if (req.url.match(/^\/[^.]*$/) && !req.url.startsWith('/node_modules')) {
+        req.url = '/index.html';
+      }
+      next();
+    },
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  preview: {
+    // For production build preview
+    allowedHosts: 'all',
   },
 }));
