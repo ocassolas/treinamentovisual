@@ -41,38 +41,32 @@ npm i
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+**Edite um arquivo diretamente no GitHub**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- Navegue até o(s) arquivo(s) desejado(s).
 
-**Use GitHub Codespaces**
+- Clique no botão "Editar" (ícone de lápis) no canto superior direito da visualização do arquivo.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- Faça as alterações e confirme-as.
 
-## What technologies are used for this project?
+**Use o GitHub Codespaces**
 
-This project is built with:
+- Navegue até a página principal do seu repositório.
 
+- Clique no botão "Código" (botão verde) próximo ao canto superior direito.
+
+- Selecione a aba "Codespaces".
+
+- Clique em "Novo codespace" para iniciar um novo ambiente Codespace.
+
+- Edite os arquivos diretamente no Codespace e confirme e envie suas alterações quando terminar.
+
+## Quais tecnologias são usadas neste projeto?
+
+Este projeto foi desenvolvido com:
 - Vite
 - TypeScript
 - React
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
