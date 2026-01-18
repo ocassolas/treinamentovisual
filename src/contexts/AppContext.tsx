@@ -49,6 +49,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     },
   ]);
 
+  // Persist currentUser to localStorage whenever it changes
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem('currentUser');
+    }
+  }, [currentUser]);
+
   // Load sectors and tutorials from Firestore
   useEffect(() => {
     try {
@@ -110,6 +119,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     setCurrentUser(null);
+    localStorage.removeItem('currentUser');
   };
 
   const addSector = async (name: string) => {
