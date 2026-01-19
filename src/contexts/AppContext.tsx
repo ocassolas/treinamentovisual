@@ -58,7 +58,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, [currentUser]);
 
-  // Load sectors and tutorials from Firestore
+  // Load sectors, tutorials and users from Firestore
   useEffect(() => {
     try {
       const sectorsUnsubscribe = onSnapshot(collection(db, 'sectors'), (snapshot) => {
@@ -71,9 +71,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setTutorials(tutorialsData);
       });
 
+      const usersUnsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {
+        const usersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as User));
+        setUsers(prev => {
+          // Keep admin users and merge with Firebase users
+          const adminUsers = prev.filter(u => u.role === 'admin');
+          return [...adminUsers, ...usersData];
+        });
+      });
+
       return () => {
         sectorsUnsubscribe();
         tutorialsUnsubscribe();
+        usersUnsubscribe();
       };
     } catch (error) {
       console.warn('Firebase not configured, using local data only.', error);
@@ -144,21 +154,42 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   const addUser = async (userData: Omit<User, 'id'>) => {
-    const newUser: User = {
-      ...userData,
-      id: Date.now().toString(),
-      viewedTutorials: [],
-    };
-    setUsers(prev => [...prev, newUser]);
-    // Users remain local
+    try {
+      const newUserData = {
+        ...userData,
+        viewedTutorials: [],
+      };
+      const docRef = await addDoc(collection(db, 'users'), newUserData);
+      const newUser: User = {
+        ...newUserData,
+        id: docRef.id,
+      };
+      setUsers(prev => [...prev, newUser]);
+    } catch (error) {
+      console.warn('Firebase not configured, user not saved to cloud.', error);
+      const newUser: User = {
+        ...userData,
+        id: Date.now().toString(),
+        viewedTutorials: [],
+      };
+      setUsers(prev => [...prev, newUser]);
+    }
   };
 
   const updateUser = async (id: string, userData: Partial<User>) => {
+    try {
+      await updateDoc(doc(db, 'users', id), userData);
+    } catch (error) {
+      console.warn('Firebase not configured, user not updated in cloud.', error);
+    }
     setUsers(prev => prev.map(u => 
       u.id === id ? { ...u, ...userData } : u
-    ));
-    // Users remain local
-  };
+    try {
+      await deleteDoc(doc(db, 'users', id));
+    } catch (error) {
+      console.warn('Firebase not configured, user not deleted from cloud.', error);
+    }
+    setUsers(prev => prev.filter(u => u.id !== id));
 
   const deleteUser = async (id: string) => {
     setUsers(prev => prev.filter(u => u.id !== id));
