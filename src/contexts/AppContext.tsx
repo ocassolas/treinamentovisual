@@ -184,16 +184,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
     setUsers(prev => prev.map(u => 
       u.id === id ? { ...u, ...userData } : u
+    ));
+  };
+
+  const deleteUser = async (id: string) => {
     try {
       await deleteDoc(doc(db, 'users', id));
     } catch (error) {
       console.warn('Firebase not configured, user not deleted from cloud.', error);
     }
     setUsers(prev => prev.filter(u => u.id !== id));
-
-  const deleteUser = async (id: string) => {
-    setUsers(prev => prev.filter(u => u.id !== id));
-    // Users remain local
   };
 
   const addTutorial = async (tutorialData: Omit<Tutorial, 'id' | 'createdAt' | 'createdBy'>) => {
@@ -245,7 +245,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (!viewedTutorials.includes(tutorialId)) {
       updatedUser.viewedTutorials = [...viewedTutorials, tutorialId];
       setCurrentUser(updatedUser);
-      await db.users.update(currentUser.id, { viewedTutorials: updatedUser.viewedTutorials });
+      try {
+        await updateDoc(doc(db, 'users', currentUser.id), { viewedTutorials: updatedUser.viewedTutorials });
+      } catch (error) {
+        console.warn('Erro ao atualizar tutorials visualizados:', error);
+      }
     }
 
     setUsers(prev => prev.map(u => {

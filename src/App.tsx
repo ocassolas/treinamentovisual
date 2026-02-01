@@ -7,6 +7,7 @@ import { AppProvider, useApp } from "@/contexts/AppContext";
 import Loading from "@/components/Loading";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
+import TestPage from "./pages/test";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Setores from "./pages/admin/Setores";
 import Usuarios from "./pages/admin/Usuarios";
@@ -37,6 +38,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/test" element={<TestPage />} />
       
       {/* Admin Routes */}
       <Route path="/admin" element={
